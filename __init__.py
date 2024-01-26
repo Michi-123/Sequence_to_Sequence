@@ -1,9 +1,7 @@
 import sys
 sys.path.append('./')
 
-from .Sequence_to_Sequence.Lang import Lang
-from .Sequence_to_Sequence.EncoderRNN import EncoderRNN
-from .Sequence_to_Sequence.AttnDecoderRNN import AttnDecoderRNN
-from .Sequence_to_Sequence import functions
-
+from .src.Lang import Lang
+from .src.EncoderRNN import EncoderRNN
+from .src.AttnDecoderRNN import AttnDecoderRNN
 from .Sequence_to_Sequence.Test import Test
