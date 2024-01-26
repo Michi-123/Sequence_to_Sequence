@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class EncoderRNN(nn.Module):
-    def __init__(self, input_size, hidden_size):
+    def __init__(self, input_size, hidden_size=256):
         super(EncoderRNN, self).__init__()
         self.hidden_size = hidden_size
 
@@ -17,3 +17,6 @@ class EncoderRNN(nn.Module):
 
     def initHidden(self):
         return torch.zeros(1, 1, self.hidden_size, device=device)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+

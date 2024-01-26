@@ -4,6 +4,17 @@ import string
 import re
 import random
 
+import torch
+import torch.nn as nn
+from torch import optim
+import torch.nn.functional as F
+from Sequence_to_Sequence import Lang
+
+import MeCab
+tagger = MeCab.Tagger("-Owakati")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device
 
 """### 関数の定義"""
 
@@ -63,6 +74,9 @@ def filterPairs(pairs):
     return [pair for pair in pairs if filterPair(pair)]
 
 def prepareData(lang1, lang2, reverse=False):
+    
+    global input_lang, output_lang, pairs
+
     input_lang, output_lang, pairs = readLangs(lang1, lang2, reverse)
 
     print("%s個の文章のペアを読み込みます" % len(pairs))
@@ -79,8 +93,12 @@ def prepareData(lang1, lang2, reverse=False):
     print("単語数:")
     print(input_lang.name, input_lang.n_words)
     print(output_lang.name, output_lang.n_words)
-    return input_lang, output_lang, pairs
+    #return input_lang, output_lang, pairs
 
+input_lang, output_lang, pairs = None, None, None
+
+SOS_token = 0
+EOS_token = 1
 
 MAX_LENGTH = 15
 
@@ -182,7 +200,7 @@ def timeSince(since, percent):
     rs = es - s
     return '%s (- %s)' % (asMinutes(s), asMinutes(rs))
 
-def trainIters(encoder, decoder, n_iters, print_every=1000, plot_every=100, learning_rate=0.01):
+def trainIters(encoder, decoder, n_iters=75000, print_every=1000, plot_every=100, learning_rate=0.01):
     start = time.time()
     plot_losses = []
     print_loss_total = 0
