@@ -214,6 +214,9 @@ def trainIters(encoder, decoder, n_iters=75000, print_every=1000, plot_every=100
     criterion = nn.NLLLoss()
 
     for iter in range(1, n_iters + 1):
+        encoder.train()
+        decoder.train()
+
         training_pair = training_pairs[iter - 1]
         input_tensor = training_pair[0]
         target_tensor = training_pair[1]
@@ -226,8 +229,8 @@ def trainIters(encoder, decoder, n_iters=75000, print_every=1000, plot_every=100
         if iter % print_every == 0:
 
             # Save
-            torch.save(encoder1.state_dict(), "encoder4.pth")
-            torch.save(attn_decoder1.state_dict(), "attn_decoder4.pth")
+            torch.save(encoder.state_dict(), "encoder.pth")
+            torch.save(decoder.state_dict(), "decoder.pth")
 
             # log
             print_loss_avg = print_loss_total / print_every
@@ -239,6 +242,10 @@ def trainIters(encoder, decoder, n_iters=75000, print_every=1000, plot_every=100
             plot_loss_avg = plot_loss_total / plot_every
             plot_losses.append(plot_loss_avg)
             plot_loss_total = 0
+
+            encoder.eval()
+            decoder.eval()
+            evaluateRandomly(encoder, decoder, n=1)
 
     showPlot(plot_losses)
 
